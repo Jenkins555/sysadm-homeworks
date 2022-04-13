@@ -47,11 +47,13 @@
     
     vagrant@testing:~$ type -a bash
     
+    bash is /tmp/new_bash/bash
+   
     bash is /usr/bin/bash
     
     bash is /bin/bash
     
-    bash is /tmp/new_bash/bash
+    
 ```
 9. Чем отличается планирование команд с помощью batch и at?
 ```
