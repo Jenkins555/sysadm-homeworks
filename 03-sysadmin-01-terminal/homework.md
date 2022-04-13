@@ -43,7 +43,7 @@
     
     vagrant@testing:~$ cp /bin/bash /tmp/new_bash/
     
-    vagrant@testing:~$ PATH=$PATH:/tmp/new_bash/
+    vagrant@testing:~$ PATH=/tmp/new_bash:$PATH
     
     vagrant@testing:~$ type -a bash
     
