@@ -113,17 +113,18 @@ WantedBy=multi-user.target
 ## --collector.cpu:  
    ### Расчёт процента использования процессора.
    >node_cpu_seconds_total{cpu="0",mode="idle"} 59702.01  
-node_cpu_seconds_total{cpu="0",mode="iowait"} 369.43  
-node_cpu_seconds_total{cpu="0",mode="irq"} 0  
-node_cpu_seconds_total{cpu="0",mode="nice"} 0.16  
-node_cpu_seconds_total{cpu="0",mode="softirq"} 25.19  
-node_cpu_seconds_total{cpu="0",mode="steal"} 0  
-node_cpu_seconds_total{cpu="0",mode="system"} 1065.8  
-node_cpu_seconds_total{cpu="0",mode="user"} 538.1  
+   node_cpu_seconds_total{cpu="0",mode="iowait"} 369.43  
+   node_cpu_seconds_total{cpu="0",mode="irq"} 0  
+   node_cpu_seconds_total{cpu="0",mode="nice"} 0.16  
+   node_cpu_seconds_total{cpu="0",mode="softirq"} 25.19  
+   node_cpu_seconds_total{cpu="0",mode="steal"} 0  
+   node_cpu_seconds_total{cpu="0",mode="system"} 1065.8  
+   node_cpu_seconds_total{cpu="0",mode="user"} 538.1  
+   
 
-  ## --collector.meminfo:
-   ### Всё что связано с памятью.
-   ># HELP node_memory_MemFree_bytes Memory information field MemFree_bytes.  
+## --collector.meminfo:
+   ### Всё что связано с памятью.   
+   >HELP node_memory_MemFree_bytes Memory information field MemFree_bytes.  
     # TYPE node_memory_MemFree_bytes gauge  
     node_memory_MemFree_bytes 1.60579584e+08  
     # HELP node_memory_MemTotal_bytes Memory information field MemTotal_bytes.  
@@ -131,20 +132,20 @@ node_cpu_seconds_total{cpu="0",mode="user"} 538.1
     node_memory_MemTotal_bytes 1.028685824e+09  
    
    
-   ## --collector.filesystem:
-    ### Контроль дискового пространства.
-    >node_filesystem_free_bytes{device="/dev/sda2",fstype="ext4",mountpoint="/boot"} 8.80697344e+08
-     node_filesystem_avail_bytes{device="/dev/sda2",fstype="ext4",mountpoint="/boot"} 8.10233856e+08
+## --collector.filesystem:
+   ### Контроль дискового пространства.
+   >node_filesystem_free_bytes{device="/dev/sda2",fstype="ext4",mountpoint="/boot"} 8.80697344e+08
+    node_filesystem_avail_bytes{device="/dev/sda2",fstype="ext4",mountpoint="/boot"} 8.10233856e+08
 
-   ## --collector.netstat:
-     ### Метрики сети.
-     ># HELP node_network_receive_bytes_total Network device statistic receive_bytes.
-      # TYPE node_network_receive_bytes_total counter
-      node_network_receive_bytes_total{device="eth0"} 4.5052648e+08
-      # HELP node_network_transmit_bytes_total Network device statistic transmit_bytes.
-      # TYPE node_network_transmit_bytes_total counter
-      node_network_transmit_bytes_total{device="eth0"} 9.661276e+06
-      node_network_transmit_bytes_total{device="lo"} 470443
+## --collector.netstat:
+   ### Метрики сети.
+    ># HELP node_network_receive_bytes_total Network device statistic receive_bytes.
+     # TYPE node_network_receive_bytes_total counter
+     node_network_receive_bytes_total{device="eth0"} 4.5052648e+08
+     # HELP node_network_transmit_bytes_total Network device statistic transmit_bytes.
+     # TYPE node_network_transmit_bytes_total counter
+     node_network_transmit_bytes_total{device="eth0"} 9.661276e+06
+     node_network_transmit_bytes_total{device="lo"} 470443
 
 
 
