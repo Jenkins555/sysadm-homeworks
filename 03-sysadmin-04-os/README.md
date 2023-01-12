@@ -5,6 +5,28 @@
     * поместите его в автозагрузку,
     * предусмотрите возможность добавления опций к запускаемому процессу через внешний файл (посмотрите, например, на `systemctl cat cron`),
     * удостоверьтесь, что с помощью systemctl процесс корректно стартует, завершается, а после перезагрузки автоматически поднимается.
+    
+ Решение: 
+ После скачивания и распаковки архива:
+$ sudo cp node_exporter /usr/local/bin/ - копируем исполняемый файл.
+$ sudo useradd --no-create-home --shell /bin/false node_exporter - создаём пользователя под именем node_exporter, без создания домашней директории.
+$ sudo chown -R node_exporter:node_exporter /usr/local/bin/node_exporter - предоставляем доступ пользователю и группе пользователей к исполняемому файлу.
+$ vim /etc/systemd/system/node_exporter.service - внутри дерректории сервисов администратора создаём unit - файл systemd. 
+
+      vagrant@vagrant:~$ cat /etc/systemd/system/node_exporter.service
+      [Unit]
+      Description=Node exporter service # Описание unit
+      After=network-online.target       # Запускать после того, как поднялась сеть.
+      [Service]
+      User=node_exporter                # Пользователь, от имени которого происходит запуск.
+      Group=node_exporter               # Группа пользователей.
+      Type=simple                       # Cлужба будет запущена незамедлительно
+      ExecStart=/usr/local/bin/node_exporter # Путь к исполняемому файлу
+      [Install]
+      WantedBy=multi-user.target        # При запуске этого юнита будет запущен многопользовательский режим
+
+
+    
 
 1. Ознакомьтесь с опциями node_exporter и выводом `/metrics` по-умолчанию. Приведите несколько опций, которые вы бы выбрали для базового мониторинга хоста по CPU, памяти, диску и сети.
 1. Установите в свою виртуальную машину [Netdata](https://github.com/netdata/netdata). Воспользуйтесь [готовыми пакетами](https://packagecloud.io/netdata/netdata/install) для установки (`sudo apt install -y netdata`). После успешной установки:
