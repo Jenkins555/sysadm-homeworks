@@ -6,14 +6,14 @@
     * предусмотрите возможность добавления опций к запускаемому процессу через внешний файл (посмотрите, например, на `systemctl cat cron`),
     * удостоверьтесь, что с помощью systemctl процесс корректно стартует, завершается, а после перезагрузки автоматически поднимается.
     
- Решение: 
- После скачивания и распаковки архива:
-$ sudo cp node_exporter /usr/local/bin/ - копируем исполняемый файл.
-$ sudo useradd --no-create-home --shell /bin/false node_exporter - создаём пользователя под именем node_exporter, без создания домашней директории.
-$ sudo chown -R node_exporter:node_exporter /usr/local/bin/node_exporter - предоставляем доступ пользователю и группе пользователей к исполняемому файлу.
-$ vim /etc/systemd/system/node_exporter.service - внутри дерректории сервисов администратора создаём unit - файл systemd. 
+ # Решение 
+ #### После скачивания и распаковки архива:
+`$ sudo cp node_exporter /usr/local/bin/` - копируем исполняемый файл.  
+`$ sudo useradd --no-create-home --shell /bin/false node_exporter` - создаём пользователя под именем node_exporter, без создания домашней директории.  
+`$ sudo chown -R node_exporter:node_exporter /usr/local/bin/node_exporter` - предоставляем доступ пользователю и группе пользователей к исполняемому файлу.  
+`$ vim /etc/systemd/system/node_exporter.service` - внутри деректории сервисов администратора создаём unit - файл systemd.   
 
-      vagrant@vagrant:~$ cat /etc/systemd/system/node_exporter.service
+      vagrant@vagrant:~$ cat /etc/systemd/system/node_exporter.service  
       [Unit]
       Description=Node exporter service # Описание unit
       After=network-online.target       # Запускать после того, как поднялась сеть.
@@ -24,6 +24,35 @@ $ vim /etc/systemd/system/node_exporter.service - внутри дерректо�
       ExecStart=/usr/local/bin/node_exporter # Путь к исполняемому файлу
       [Install]
       WantedBy=multi-user.target        # При запуске этого юнита будет запущен многопользовательский режим
+      
+      
+  `$ sudo systemctl start node_exporter` - запускаем node_exporter
+  
+      vagrant@vagrant:~$ sudo systemctl status node_exporter  # Проверяем статус сервиса
+      node_exporter.service - Node exporter service   # Название сервиса 
+      Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: enabled)   #Загружен.Директория юнита. 
+      Active: active (running) since Wed 2023-01-11 11:32:11 UTC; 20h ago  # Состояние, время запуска.
+      Main PID: 50422 (node_exporter)  # Идентификатор процесса
+      Tasks: 4 (limit: 1071)  
+      Memory: 2.8M  
+      CGroup: /system.slice/node_exporter.service  
+                └─50422 /usr/local/bin/node_exporter  
+      Jan 11 11:32:11 vagrant node_exporter[50422]: ts=2023-01-11T11:32:11.625Z caller=node_exporter.go:117 level=info collector=thermal_zone  #Несколько последних выводов программы.
+      Jan 11 11:32:11 vagrant node_exporter[50422]: ts=2023-01-11T11:32:11.625Z caller=node_exporter.go:117 level=info collector=time
+
+ `$ sudo systemctl enable node_exporter` - помещаем сервис в автозагрузку.  
+ `$ sudo systemctl daemon-reload` - перезагрузка systemd с сохранением всех зависимостей.(получение измененных конфигураций из файловой системы и повторное создание деревьев зависимостей)
+  
+  `vagrant@vagrant:~$ sudo systemctl is-enabled node_exporter ` - Проверяем наличие сервиса в автозапуске.  
+  `enabled`
+  
+  `vagrant@vagrant:~$ sudo systemctl stop node_exporter` - Принудительное завершение работы сервиса.  
+  `vagrant@vagrant:~$ sudo systemctl status node_exporter    
+   Active: inactive (dead) since Thu 2023-01-12 08:33:23 UTC; 8s ago
+`
+
+ 
+
 
 
     
