@@ -49,6 +49,45 @@
   `vagrant@vagrant:~$ sudo systemctl stop node_exporter` - Принудительное завершение работы сервиса.  
   `vagrant@vagrant:~$ sudo systemctl status node_exporter    
    Active: inactive (dead) since Thu 2023-01-12 08:33:23 UTC; 8s ago
+   
+   `sudo systemctl restart node_exporter` - перезапускаем сервис.
+   
+   Jan 12 08:33:23 vagrant systemd[1]: Stopping Node explorter service... 
+   Jan 12 08:33:23 vagrant systemd[1]: node_exporter.service: Succeeded.
+   Jan 12 08:33:23 vagrant systemd[1]: Stopped Node explorter service.   
+   Jan 12 08:38:52 vagrant systemd[1]: Started Node explorter service.
+    
+    
+#### Создадим systemd таймер, для node_exporter:
+
+`$ sudo vim /etc/systemd/system/node_exporter.timer` - создадим unit таймера.  
+
+[Unit]  
+Description=node_exporter timer  
+[Timer]  
+OnUnitInactiveSec=30s  # Сработает после закрытия node_exporter
+Unit=node_exporter.service  
+[Install]  
+WantedBy=timers.target 
+
+`$ sudo systemctl daemon-reload` - Перезагружаем systemd.  
+`$ sudo systemctl start node_exporter.timer` - Запускаем unit таймера.  
+`$ sudo systemctl stop node_exporter` - Завершаем работу node_exporter.service.  
+
+ `sudo journalctl -eu node_exporter` - вызываем журнал процесса.  
+ 
+Jan 12 10:31:33 vagrant systemd[1]: Stopping Node explorter service...  
+
+Jan 12 10:31:33 vagrant systemd[1]: node_exporter.service: Succeeded.  
+
+Jan 12 10:31:33 vagrant systemd[1]: Stopped Node explorter service.  
+
+Jan 12 10:32:10 vagrant systemd[1]: Started Node explorter service.
+
+
+
+
+
 `
 
  
