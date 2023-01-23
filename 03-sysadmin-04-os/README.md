@@ -160,6 +160,18 @@ WantedBy=multi-user.target
     ```
 
     После успешной перезагрузки в браузере *на своем ПК* (не в виртуальной машине) вы должны суметь зайти на `localhost:19999`. Ознакомьтесь с метриками, которые по умолчанию собираются Netdata и с комментариями, которые даны к этим метрикам.
+   
+ ```  
+[glbal]
+        run as user = netdata
+        web files owner = root
+        web files group = root
+        # Netdata is not designed to be exposed to potentially hostile
+        # networks. See https://github.com/netdata/netdata/issues/164
+        bind socket to IP = 127.0.0.1
+[web]
+     bind to = 0.0.0.0
+```
 
 1. Можно ли по выводу `dmesg` понять, осознает ли ОС, что загружена не на настоящем оборудовании, а на системе виртуализации?
 1. Как настроен sysctl `fs.nr_open` на системе по-умолчанию? Узнайте, что означает этот параметр. Какой другой существующий лимит не позволит достичь такого числа (`ulimit --help`)?
