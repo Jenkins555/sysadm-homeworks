@@ -29,10 +29,68 @@
     ```
 
     Данная конфигурация создаст новую виртуальную машину с двумя дополнительными неразмеченными дисками по 2.5 Гб.
+    
+    ```
+    Сделано
+    ```
 
-1. Используя `fdisk`, разбейте первый диск на 2 раздела: 2 Гб, оставшееся пространство.
+1. Используя `fdisk`, разбейте первый диск на 2 раздела: 2 Гб, оставшееся пространство.   
+
+```
+vagrant@vagrant:~$ sudo fdisk /dev/sdb
+
+Welcome to fdisk (util-linux 2.34).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table.
+Created a new DOS disklabel with disk identifier 0x563918d7.
+
+Command (m for help): n
+Partition type
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended (container for logical partitions)
+Select (default p): p
+Partition number (1-4, default 1): 1
+First sector (2048-5242879, default 2048): 2048
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-5242879, default 5242879): 5242879
+
+Created a new partition 1 of type 'Linux' and of size 2.5 GiB.
+
+```
 
 1. Используя `sfdisk`, перенесите данную таблицу разделов на второй диск.
+
+```
+vagrant@vagrant:~$ sudo sfdisk -d /dev/sdb | sudo sfdisk /dev/sdc
+Checking that no-one is using this disk right now ... OK
+
+Disk /dev/sdc: 2.51 GiB, 2684354560 bytes, 5242880 sectors
+Disk model: VBOX HARDDISK
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+>>> Script header accepted.
+>>> Script header accepted.
+>>> Script header accepted.
+>>> Script header accepted.
+>>> Created a new DOS disklabel with disk identifier 0x563918d7.
+/dev/sdc1: Created a new partition 1 of type 'Linux' and of size 2.5 GiB.
+/dev/sdc2: Done.
+
+New situation:
+Disklabel type: dos
+Disk identifier: 0x563918d7
+
+Device     Boot Start     End Sectors  Size Id Type
+/dev/sdc1        2048 5242879 5240832  2.5G 83 Linux
+
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+```
 
 1. Соберите `mdadm` RAID1 на паре разделов 2 Гб.
 
