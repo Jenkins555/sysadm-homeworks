@@ -39,13 +39,6 @@
 ```
 vagrant@vagrant:~$ sudo fdisk /dev/sdb
 
-Welcome to fdisk (util-linux 2.34).
-Changes will remain in memory only, until you decide to write them.
-Be careful before using the write command.
-
-Device does not contain a recognized partition table.
-Created a new DOS disklabel with disk identifier 0x563918d7.
-
 Command (m for help): n
 Partition type
    p   primary (0 primary, 0 extended, 4 free)
@@ -53,9 +46,26 @@ Partition type
 Select (default p): p
 Partition number (1-4, default 1): 1
 First sector (2048-5242879, default 2048): 2048
-Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-5242879, default 5242879): 5242879
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-5242879, default 5242879): +2G
 
-Created a new partition 1 of type 'Linux' and of size 2.5 GiB.
+Created a new partition 1 of type 'Linux' and of size 2 GiB.
+
+Command (m for help): n
+Partition type
+   p   primary (1 primary, 0 extended, 3 free)
+   e   extended (container for logical partitions)
+Select (default p): p
+Partition number (2-4, default 2): 2
+First sector (4196352-5242879, default 4196352): 4196352
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (4196352-5242879, default 5242879):
+
+Created a new partition 2 of type 'Linux' and of size 511 MiB.
+
+Command (m for help): w
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
 
 ```
 
@@ -70,25 +80,35 @@ Disk model: VBOX HARDDISK
 Units: sectors of 1 * 512 = 512 bytes
 Sector size (logical/physical): 512 bytes / 512 bytes
 I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x563918d7
+
+Old situation:
+
+Device     Boot Start     End Sectors  Size Id Type
+/dev/sdc1        2048 5242879 5240832  2.5G 83 Linux
 
 >>> Script header accepted.
 >>> Script header accepted.
 >>> Script header accepted.
 >>> Script header accepted.
 >>> Created a new DOS disklabel with disk identifier 0x563918d7.
-/dev/sdc1: Created a new partition 1 of type 'Linux' and of size 2.5 GiB.
-/dev/sdc2: Done.
+/dev/sdc1: Created a new partition 1 of type 'Linux' and of size 2 GiB.
+/dev/sdc2: Created a new partition 2 of type 'Linux' and of size 511 MiB.
+/dev/sdc3: Done.
 
 New situation:
 Disklabel type: dos
 Disk identifier: 0x563918d7
 
-Device     Boot Start     End Sectors  Size Id Type
-/dev/sdc1        2048 5242879 5240832  2.5G 83 Linux
+Device     Boot   Start     End Sectors  Size Id Type
+/dev/sdc1          2048 4196351 4194304    2G 83 Linux
+/dev/sdc2       4196352 5242879 1046528  511M 83 Linux
 
 The partition table has been altered.
 Calling ioctl() to re-read partition table.
 Syncing disks.
+
 
 ```
 
