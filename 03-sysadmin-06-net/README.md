@@ -92,34 +92,62 @@ UNCONN          0               0                        127.0.0.53%lo:domain   
     ```
 
 1. Сколько портов TCP находится в состоянии прослушивания на вашей виртуальной машине с Ubuntu, и каким процессам они принадлежат?   
-    ```
-         vagrant@vagrant:~$ sudo lsof -iTCP -sTCP:LISTEN
-    COMMAND    PID            USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-    systemd-r  656 systemd-resolve   13u  IPv4  21848      0t0  TCP localhost:domain (LISTEN)
-    sshd      1586            root    3u  IPv4  25384      0t0  TCP *:ssh (LISTEN)
-    sshd      1586            root    4u  IPv6  25386      0t0  TCP *:ssh (LISTEN)
+          ```
+               vagrant@vagrant:~$ sudo lsof -iTCP -sTCP:LISTEN
+          COMMAND    PID            USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+          systemd-r  656 systemd-resolve   13u  IPv4  21848      0t0  TCP localhost:domain (LISTEN)
+          sshd      1586            root    3u  IPv4  25384      0t0  TCP *:ssh (LISTEN)
+          sshd      1586            root    4u  IPv6  25386      0t0  TCP *:ssh (LISTEN)
 
-    ```   
-    ## Или так:
-    
-    ```
-     netstat -tlnp
-(Not all processes could be identified, non-owned process info
- will not be shown, you would have to be root to see it all.)
-Active Internet connections (only servers)
-Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
-tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      -
-tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -
-tcp6       0      0 :::22                   :::*                    LISTEN      -
+          ```   
+          ## Или так:
 
-    ```
+          ```
+           netstat -tlnp
+      (Not all processes could be identified, non-owned process info
+       will not be shown, you would have to be root to see it all.)
+      Active Internet connections (only servers)
+      Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+      tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      -
+      tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -
+      tcp6       0      0 :::22                   :::*                    LISTEN      -
+
+          ```
 
 1. Какой ключ нужно добавить в `tcpdump`, чтобы он начал выводить не только заголовки, но и содержимое фреймов в текстовом виде? А в текстовом и шестнадцатиричном?   
-      ```
-        Команда tcpdump с флагом -A выводит содержимое пакетов в текстовом формате, а флаг -X - в шестнадцатеричном и текстовом форматах одновременно.
-      ```
+        ```
+          Команда tcpdump с флагом -A выводит содержимое пакетов в текстовом формате, а флаг -X - в шестнадцатеричном и текстовом форматах одновременно.
+        ```
 
-1. Попробуйте собрать дамп трафика с помощью `tcpdump` на основном интерфейсе вашей виртуальной машины и посмотреть его через tshark или Wireshark (можно ограничить число пакетов `-c 100`). Встретились ли вам какие-то установленные флаги Internet Protocol (не флаги TCP, а флаги IP)? Узнайте, какие флаги бывают. Как на самом деле называется стандарт Ethernet, фреймы которого попали в ваш дамп? Можно ли где-то в дампе увидеть OUI?
+1. Попробуйте собрать дамп трафика с помощью `tcpdump` на основном интерфейсе вашей виртуальной машины и посмотреть его через tshark или Wireshark (можно ограничить число пакетов `-c 100`). Встретились ли вам какие-то установленные флаги Internet Protocol (не флаги TCP, а флаги IP)? Узнайте, какие флаги бывают. Как на самом деле называется стандарт Ethernet, фреймы которого попали в ваш дамп? Можно ли где-то в дампе увидеть OUI?   
+
+        ```
+        vagrant@vagrant:~$ sudo tcpdump -i eth0 -c 100 -w dump.pcap
+        tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes   
+        vagrant@vagrant:~$ tshark -r dump.pcap
+        1   0.000000    10.0.2.15 → 10.0.2.2     SSH 154 Server: Encrypted packet (len=100)
+        2   0.000762     10.0.2.2 → 10.0.2.15    TCP 60 57706 → 22 [ACK] Seq=1 Ack=101 Win=65535 Len=0
+        3   7.961419     10.0.2.2 → 10.0.2.15    SSH 114 Client: Encrypted packet (len=60)
+        4   8.005342    10.0.2.15 → 10.0.2.2     TCP 54 22 → 57706 [ACK] Seq=101 Ack=61 Win=62780 Len=0
+        5  19.104700     10.0.2.2 → 10.0.2.15    SSH 90 Client: Encrypted packet (len=36)
+        6  19.104730    10.0.2.15 → 10.0.2.2     TCP 54 22 → 57706 [ACK] Seq=101 Ack=97 Win=62780 Len=0
+        7  19.105163    10.0.2.15 → 10.0.2.2     SSH 90 Server: Encrypted packet (len=36)
+        8  19.105463     10.0.2.2 → 10.0.2.15    TCP 60 57706 → 22 [ACK] Seq=97 Ack=137 Win=65535 Len=0
+
+
+
+        ```   
+        ```
+         Протокол IP не упоминается явно, но он используется для маршрутизации пакетов.   
+
+         В IPv4 заголовке протокола IP могут быть установлены следующие флаги:   
+          DF (Don't Fragment) - указывает, что пакет не должен быть фрагментирован         
+          MF (More Fragments) - указывает, что это не последний фрагмент пакета         
+          Fragment Offset - определяет позицию фрагмента внутри исходного пакета      
+
+          OUI (Organizationally Unique Identifier) - это идентификатор уникальной организации, который используется в качестве первых трех байтов MAC-адреса. OUI может помочь идентифицировать производителя    устройства. В дампе трафика можно увидеть OUI в MAC-адресах.
+
+        ```
 
  
  ---
